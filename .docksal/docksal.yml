@@ -1,1 +1,29 @@
 version: "3.9"
+
+
+services:
+  web:
+    image: docksal/apache:2.4-2.5  # Usando Apache en lugar de Nginx
+    ports:
+      - "8080:80"  # Mapear el puerto 8080 del host al puerto 80 del contenedor
+    volumes:
+      - .:/var/www/html:ro  # El código de tu proyecto se monta en /var/www/html
+    environment:
+      VIRTUAL_HOST: mydrupal.local
+    extra_hosts:
+      - "mydrupal.local:127.0.0.1"
+  
+  cli:
+    image: docksal/cli:php8.3-3.8
+    volumes:
+      - .:/var/www/html
+    environment:
+      PHP_MEMORY_LIMIT: 512M
+      PHP_UPLOAD_MAX_FILESIZE: 50M
+      PHP_POST_MAX_SIZE: 50M
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge

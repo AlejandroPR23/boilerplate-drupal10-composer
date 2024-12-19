@@ -1,0 +1,13 @@
+name: 'Mi Tema Personalizado'
+type: theme
+base theme: olivero  # Usar el tema base "Olivero" que es compatible con Drupal 10
+description: 'Tema personalizado para mi videotienda.'
+core_version_requirement: ^10 || ^9  # Asegura que sea compatible con Drupal 9 y 10
+package: Custom
+regions:
+  header: 'Encabezado'
+  content: 'Contenido principal'
+  footer: 'Pie de página'
+libraries:
+  - mi_tema/global-styles
+

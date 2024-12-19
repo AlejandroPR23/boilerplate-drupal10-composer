@@ -1,0 +1,31 @@
+/* Estilo para la tabla de películas */
+.pelicula-tabla {
+    width: 100%;  /* Hacer que la tabla ocupe todo el ancho disponible */
+    border-collapse: collapse;  /* Colapsar los bordes de la tabla */
+    margin-bottom: 20px;  /* Espaciado inferior */
+}
+
+/* Estilo para las celdas de la tabla */
+.pelicula-tabla td, .pelicula-tabla th {
+    border: 1px solid #ddd;  /* Borde gris claro */
+    padding: 12px 15px;  /* Espaciado interno */
+    text-align: left;  /* Alineación del texto a la izquierda */
+}
+
+/* Estilo para los encabezados de la tabla */
+.pelicula-tabla th {
+    background-color: #740938;  /* Color de fondo para el encabezado */
+    color: white;  /* Color del texto en el encabezado */
+    font-weight: bold;  /* Negrita en los encabezados */
+}
+
+/* Estilo para las filas alternas */
+.pelicula-tabla tr:nth-child(even) {
+    background-color: #f2f2f2;  /* Color de fondo para las filas pares */
+}
+
+/* Efecto hover sobre las filas */
+.pelicula-tabla tr:hover {
+    background-color: #ddd;  /* Color de fondo cuando el ratón pasa sobre la fila */
+}
+

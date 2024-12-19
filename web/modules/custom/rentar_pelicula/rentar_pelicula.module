@@ -1,0 +1,92 @@
+<?php
+
+use Drupal\webform\WebformSubmissionInterface;
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_webform_submission_insert().
+ */
+function rentar_pelicula_webform_submission_insert(WebformSubmissionInterface $submission) {
+  // Obtén los datos del formulario.
+  $data = $submission->getData();
+
+  // Verifica si el formulario es "Rentar Película".
+  if ($submission->getWebform()->id() === 'rentar_pelicula') {
+    // Obtén el ID de la película seleccionada.
+    $pelicula_id = $data['pelicula'] ?? NULL;
+
+    // Depuración: Registrar el ID de la película seleccionada.
+    \Drupal::logger('rentar_pelicula')->debug('Formulario enviado. ID de película: @id', ['@id' => $pelicula_id]);
+
+    // Verifica si se proporcionó un ID de película.
+    if (!$pelicula_id) {
+      \Drupal::logger('rentar_pelicula')->error('No se proporcionó un ID de película en el formulario.');
+      return;
+    }
+
+    // Carga el nodo de la película.
+    $pelicula = Node::load($pelicula_id);
+
+    // Verifica si el nodo de la película existe.
+    if (!$pelicula) {
+      \Drupal::logger('rentar_pelicula')->error('No se pudo cargar la película con ID: @id', ['@id' => $pelicula_id]);
+      return;
+    }
+
+    // Depuración: Confirmar que se cargó la película.
+    \Drupal::logger('rentar_pelicula')->debug('Película cargada: @titulo', ['@titulo' => $pelicula->label()]);
+
+    // Actualiza el campo de estado de la película.
+    $pelicula->set('field_estado', 'Rentada');
+    $pelicula->save();
+
+    // Depuración: Confirmar que se cambió el estado.
+    \Drupal::logger('rentar_pelicula')->info('El estado de la película "@titulo" se actualizó a "Rentada".', [
+      '@titulo' => $pelicula->label(),
+    ]);
+  }
+}
+
+/**
+ * Implements hook_webform_submission_presave().
+ */
+function rentar_pelicula_webform_submission_presave(\Drupal\webform\WebformSubmissionInterface $submission) {
+  // Verifica si el formulario es "Rentar Película".
+  if ($submission->getWebform()->id() === 'rentar_pelicula') {
+    // Obtén los datos del formulario.
+    $data = $submission->getData();
+
+    // Obtén el ID de la película seleccionada.
+    $pelicula_id = $data['pelicula'] ?? NULL;
+
+    // Si no hay ID de película, lanza un error.
+    if (!$pelicula_id) {
+      \Drupal::messenger()->addError('No se seleccionó ninguna película.');
+      $submission->setHandled(TRUE); // Detiene el envío del formulario.
+      return;
+    }
+
+    // Carga el nodo de la película.
+    $pelicula = \Drupal\node\Entity\Node::load($pelicula_id);
+
+    // Verifica si el nodo existe.
+    if (!$pelicula) {
+      \Drupal::messenger()->addError('No se pudo cargar la película seleccionada.');
+      $submission->setHandled(TRUE);
+      return;
+    }
+
+    // Verifica el estado de la película.
+    if ($pelicula->get('field_estado')->value === 'Rentada') {
+      // Muestra un mensaje de error si la película ya está rentada.
+      \Drupal::messenger()->addError('La película "' . $pelicula->label() . '" ya está rentada.');
+      $submission->setHandled(TRUE);
+      return;
+    }
+  }
+}
+
+
+
+
+

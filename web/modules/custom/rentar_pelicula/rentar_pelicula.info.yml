@@ -1,0 +1,9 @@
+name: 'Rentar Película'
+type: module
+description: 'Módulo personalizado para cambiar el estado de las películas al completar el formulario.'
+core_version_requirement: ^9 || ^10
+package: Custom
+dependencies:
+  - drupal:webform
+  - drupal:node
+
